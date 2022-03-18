@@ -5,12 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Collections.ObjectModel;
+using System.Windows;
 
 namespace FileExplorer_MichalRac
 {
     public class DirectoryTreeViewItem
     {
         public string? Title { get; set; }
+        public string? FullPath { get; set; }
         public ObservableCollection<DirectoryTreeViewItem> Items { get; set; }
 
         public DirectoryTreeViewItem(string path, bool isDirectory)
@@ -18,6 +20,7 @@ namespace FileExplorer_MichalRac
             try
             {
                 Title = Path.GetFileName(path);
+                FullPath = path;
                 Items = isDirectory 
                     ? ReadFilesFromDirectory(path) 
                     : new ObservableCollection<DirectoryTreeViewItem>();

@@ -15,6 +15,8 @@ namespace FileExplorer_MichalRac
     /// </summary>
     public partial class MainWindow : Window
     {
+        private LoadedTextFile loadedTextFile = new LoadedTextFile();
+
         public MainWindow()
         {
             InitializeComponent();
@@ -24,6 +26,14 @@ namespace FileExplorer_MichalRac
             dlg.ShowDialog();
 
             dirView.Items.Add(new DirectoryTreeViewItem(dlg.SelectedPath, true));
+        }
+
+        private void TextBlock_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            // TODO Saving path in a tag is a dirty hack, to look into creating a derived class from TextBlock that would have a special field for caching and accessing it
+            var path = ((TextBlock)sender).Tag.ToString();
+            loadedTextFile.TryLoadNewText(path);
+            fText.Text = loadedTextFile.LoadedText;
         }
     }
 }
