@@ -23,6 +23,11 @@ namespace FileExplorer_MichalRac
                 using (var textReader = File.OpenText(path))
                 {
                     LoadedText = textReader.ReadToEnd();
+
+                    if(LoadedText == string.Empty)
+                    {
+                        LoadedText = "<no text found>";
+                    }
                 }
             }
             catch (System.Exception)

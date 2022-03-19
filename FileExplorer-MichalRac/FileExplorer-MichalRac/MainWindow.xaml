@@ -14,18 +14,15 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>
             <RowDefinition Height="1*"/>
-            <RowDefinition Height="1*"/>
+            <RowDefinition Height="20"/>
         </Grid.RowDefinitions>
 
         <DockPanel Grid.ColumnSpan="2">
             <WrapPanel>
                 <Menu DockPanel.Dock="Top">
                     <MenuItem Header="_File">
-                        <MenuItem Header="_New"/>
-                        <MenuItem Header="_Open"/>
-                        <MenuItem Header="_Save"/>
-                        <Separator/>
-                        <MenuItem Header="_Exit"/>
+                        <MenuItem Header="_Open" Click="MenuItem_Open_Click"/>
+                        <MenuItem Header="_Exit" Click="MenuItem_Exit_Click"/>
                     </MenuItem>
                 </Menu>
             </WrapPanel>
@@ -35,7 +32,7 @@
         <TreeView Grid.Row="1" Name="dirView">
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate DataType="{x:Type self:DirectoryTreeViewItem}" ItemsSource="{Binding Items}">
-                    <TextBlock Text="{Binding Title}" Tag="{Binding FullPath}" MouseLeftButtonUp="TextBlock_MouseLeftButtonUp"/>
+                    <TextBlock Text="{Binding Title}" Tag="{Binding FullPath}" ContextMenuOpening="TextBlock_ContextMenuOpening"/>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>
