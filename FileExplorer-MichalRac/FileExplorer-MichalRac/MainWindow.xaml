@@ -29,13 +29,11 @@
         </DockPanel>
 
         <TreeView Grid.Row="1" Name="dirView" ItemsSource="{Binding Root.Items}">
-            <!--
             <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate DataType="{x:Type self:DirectoryTreeViewItem}" ItemsSource="{Binding Items}">
-                    <TextBlock Text="{Binding Title}" Tag="{Binding FullPath}" ContextMenuOpening="TextBlock_ContextMenuOpening"/>
-                </HierarchicalDataTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Caption}"/>
+                </DataTemplate>
             </TreeView.ItemTemplate>
-            -->
         </TreeView>
 
         <StatusBar Grid.Row="2">

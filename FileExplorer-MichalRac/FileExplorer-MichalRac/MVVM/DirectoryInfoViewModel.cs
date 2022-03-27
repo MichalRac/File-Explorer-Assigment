@@ -27,7 +27,7 @@
                 }
                 foreach (var fileName in Directory.GetFiles(path))
                 {
-                    var fileInfo = new FileInfo(path);
+                    var fileInfo = new FileInfo(fileName);
                     var itemViewModel = new FileInfoViewModel();
                     itemViewModel.Model = fileInfo;
                     Items.Add(itemViewModel);
