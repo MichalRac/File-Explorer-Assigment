@@ -25,11 +25,6 @@ namespace FileExplorer_MichalRac
             InitializeComponent();
             this.DataContext = this;
 
-            var dlg = new FolderBrowserDialog() { Description = "Select directory to open" };
-            dlg.ShowDialog();
-
-            dirView.Items.Add(new DirectoryTreeViewItem(dlg.SelectedPath, true));
-
             dirView.SelectedItemChanged += DirView_SelectedItemChanged;
         }
 
@@ -132,10 +127,14 @@ namespace FileExplorer_MichalRac
         private void MenuItem_Open_Click(object sender, RoutedEventArgs e)
         {
             var dlg = new FolderBrowserDialog() { Description = "Select directory to open" };
-            dlg.ShowDialog();
 
-            dirView.Items.Clear();
-            dirView.Items.Add(new DirectoryTreeViewItem(dlg.SelectedPath, true));
+            if(dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                var path = dlg.SelectedPath;
+                var fileExplorer = new MVVM.FileExplorer();
+                fileExplorer.OpenRoot(path);
+                DataContext = fileExplorer;
+            }
         }
 
         private void MenuItem_Exit_Click(object sender, RoutedEventArgs e)
