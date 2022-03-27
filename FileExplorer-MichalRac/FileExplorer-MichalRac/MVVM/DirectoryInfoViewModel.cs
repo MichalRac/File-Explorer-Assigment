@@ -24,6 +24,8 @@
                     var itemViewModel = new DirectoryInfoViewModel();
                     itemViewModel.Model = dirInfo;
                     Items.Add(itemViewModel);
+
+                    itemViewModel.Open(dirName);
                 }
                 foreach (var fileName in Directory.GetFiles(path))
                 {
