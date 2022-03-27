@@ -29,6 +29,24 @@ namespace FileExplorer_MichalRac
             dlg.ShowDialog();
 
             dirView.Items.Add(new DirectoryTreeViewItem(dlg.SelectedPath, true));
+
+            dirView.SelectedItemChanged += DirView_SelectedItemChanged;
+        }
+
+        private void DirView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            var dtvi = (DirectoryTreeViewItem)dirView.SelectedItem;
+            var path = dtvi.FullPath;
+
+            string rash = string.Empty;
+
+            var attributes = File.GetAttributes(path);
+            rash += attributes.HasFlag(FileAttributes.ReadOnly) ? "r" : "-";
+            rash += attributes.HasFlag(FileAttributes.Archive) ? "a" : "-";
+            rash += attributes.HasFlag(FileAttributes.System) ? "s" : "-";
+            rash += attributes.HasFlag(FileAttributes.Hidden) ? "h" : "-";
+
+            rashText.Text = rash;
         }
 
         // TODO Saving path in a tag is a dirty hack, to look into creating a derived class from TextBlock that would have a special field for caching and accessing it

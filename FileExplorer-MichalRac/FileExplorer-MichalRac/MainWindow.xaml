@@ -26,7 +26,6 @@
                     </MenuItem>
                 </Menu>
             </WrapPanel>
-            <TextBox AcceptsReturn="True"/>
         </DockPanel>
 
         <TreeView Grid.Row="1" Name="dirView">
@@ -36,6 +35,10 @@
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>
+
+        <StatusBar Grid.Row="2">
+            <TextBlock Name="rashText"/>
+        </StatusBar>
 
         <ScrollViewer Grid.Row="1" Grid.Column="1">
             <TextBox Name="fText" TextWrapping="Wrap" />
