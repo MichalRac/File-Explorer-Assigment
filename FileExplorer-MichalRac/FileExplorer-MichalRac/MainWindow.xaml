@@ -4,8 +4,16 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:self="clr-namespace:FileExplorer_MichalRac"
+        xmlns:mvvm="clr-namespace:FileExplorer_MichalRac.MVVM"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
+    
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type mvvm:FileInfoViewModel}">
+            <TextBlock Text="{Binding Caption}"/>
+        </DataTemplate>
+    </Window.Resources>
+    
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"/>
@@ -28,13 +36,7 @@
             </WrapPanel>
         </DockPanel>
 
-        <TreeView Grid.Row="1" Name="dirView" ItemsSource="{Binding Root.Items}">
-            <TreeView.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding Caption}"/>
-                </DataTemplate>
-            </TreeView.ItemTemplate>
-        </TreeView>
+        <TreeView Grid.Row="1" Name="dirView" ItemsSource="{Binding Root.Items}"/>
 
         <StatusBar Grid.Row="2">
             <TextBlock Name="rashText"/>
