@@ -9,6 +9,8 @@
 
     public class FileSystemInfoViewModel : ViewModelBase
     {
+        public string Caption { get; set; }
+
         private FileSystemInfo _fileSystemInfo;
         public FileSystemInfo Model
         {
@@ -19,6 +21,7 @@
                 {
                     _fileSystemInfo = value;
 
+                    Caption = value.Name;
                     CreationTime = value.CreationTime;
                     CreationTimeUTC = value.CreationTimeUtc;
                     LastWriteTime = value.LastWriteTime;
