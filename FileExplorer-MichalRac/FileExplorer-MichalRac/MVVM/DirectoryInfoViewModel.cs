@@ -7,10 +7,12 @@
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+    using System.Windows;
 
     public class DirectoryInfoViewModel : FileSystemInfoViewModel
     {
         public Exception Exception { get; private set; }
+        public FileSystemWatcher Watcher { get; private set; }
         public ObservableCollection<FileSystemInfoViewModel> Items { get; private set; } = new ObservableCollection<FileSystemInfoViewModel>();
 
         public bool Open(string path)
@@ -40,7 +42,37 @@
             {
                 Exception = ex;
             }
+
+            if(Watcher == null)
+            {
+                Watcher = new FileSystemWatcher(path);
+                Watcher.Created += OnFileSystemChanged;
+                Watcher.Renamed += OnFileSystemChanged;
+                Watcher.Deleted += OnFileSystemChanged;
+                Watcher.Changed += OnFileSystemChanged;
+                Watcher.Error += Watcher_Error;
+                Watcher.EnableRaisingEvents = true;
+            }
+
             return result;
+        }
+
+        private void OnFileSystemChanged(object sender, FileSystemEventArgs e)
+        {
+            Application.Current.Dispatcher.Invoke(() => OnFileSystemChanged(e));
+        }
+
+        private void OnFileSystemChanged(FileSystemEventArgs e)
+        {
+            // TODO would be more efficient and better for user if it just updated affected files instead of full reload
+            Items.Clear();
+            var path = e.FullPath.Substring(0, e.FullPath.Count() - e.Name.Count() - 1);
+            Open(path);
+        }
+
+        private void Watcher_Error(object sender, ErrorEventArgs e)
+        {
+            throw new NotImplementedException();
         }
     }
 }
