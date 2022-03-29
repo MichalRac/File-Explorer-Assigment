@@ -1,12 +1,28 @@
 ﻿namespace FileExplorer_MichalRac.MVVM
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
+    using System.IO;
+
     public class FileInfoViewModel : FileSystemInfoViewModel
     {
+        public string IconPath { get; private set; }
+
+        public void Setup(string fileName)
+        {
+            var extension = Path.GetExtension(fileName);
+
+            switch (extension)
+            {
+                case ".txt":
+                    IconPath = "Assets/text-file.png";
+                    break;
+                case ".pdf":
+                    IconPath = "Assets/pdf-file.png";
+                    break;
+                default:
+                    IconPath = "Assets/unknown-file.png";
+                    break;
+            }
+        }
 
     }
 }

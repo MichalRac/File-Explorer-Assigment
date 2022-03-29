@@ -35,6 +35,8 @@
                     var itemViewModel = new FileInfoViewModel();
                     itemViewModel.Model = fileInfo;
                     Items.Add(itemViewModel);
+
+                    itemViewModel.Setup(fileName);
                 }
                 result = true;
             }
