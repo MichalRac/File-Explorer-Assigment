@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.Collections.ObjectModel;
 using System.Windows.Forms;
 using System.Windows.Input;
+using FileExplorer_MichalRac.MVVM;
 
 namespace FileExplorer_MichalRac
 {
@@ -17,13 +18,15 @@ namespace FileExplorer_MichalRac
     public partial class MainWindow : Window
     {
         private LoadedTextFile loadedTextFile = new LoadedTextFile();
+        public FileExplorer FileExplorer { get; private set; }
 
         public MainWindow()
         {
             Topmost = true;
 
             InitializeComponent();
-            this.DataContext = this;
+            FileExplorer = new FileExplorer();
+            this.DataContext = FileExplorer;
 
             dirView.SelectedItemChanged += DirView_SelectedItemChanged;
         }
@@ -131,9 +134,7 @@ namespace FileExplorer_MichalRac
             if(dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 var path = dlg.SelectedPath;
-                var fileExplorer = new MVVM.FileExplorer();
-                fileExplorer.OpenRoot(path);
-                DataContext = fileExplorer;
+                FileExplorer.OpenRoot(path);
             }
         }
 

@@ -10,14 +10,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\folder_closed.png" />
     <None Remove="Assets\pdf-file.png" />
+    <None Remove="Assets\pl_flag.png" />
     <None Remove="Assets\text-file.png" />
+    <None Remove="Assets\uk_flag.png" />
     <None Remove="Assets\unknown-file.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Assets\text-file.png" />
     <Resource Include="Assets\folder_closed.png" />
+    <Resource Include="Assets\pl_flag.png" />
+    <Resource Include="Assets\uk_flag.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\text-file.png" />
     <Resource Include="Assets\pdf-file.png" />
     <Resource Include="Assets\unknown-file.png" />
   </ItemGroup>
