@@ -10,7 +10,10 @@
     
     <Window.Resources>
         <HierarchicalDataTemplate DataType="{x:Type mvvm:DirectoryInfoViewModel}" ItemsSource="{Binding Items}">
-            <TextBlock Text="{Binding Caption}" FontWeight="Bold"/>
+            <StackPanel Orientation="Horizontal">
+                <Image Width="16" Source="Assets/folder_closed.png"/>
+                <TextBlock Text="{Binding Caption}" Margin="10,0,0,0" FontWeight="Bold"/>
+            </StackPanel>
         </HierarchicalDataTemplate>
         
         <DataTemplate DataType="{x:Type mvvm:FileInfoViewModel}">
