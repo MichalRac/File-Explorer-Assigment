@@ -9,6 +9,7 @@
         Title="MainWindow" Height="450" Width="800">
 
     <Window.Resources>
+        <mvvm:Strings x:Key="Strings" />
         <mvvm:LangBoolConverter x:Key="LangBoolConverter"/>
         <HierarchicalDataTemplate DataType="{x:Type mvvm:DirectoryInfoViewModel}" ItemsSource="{Binding Items}">
             <StackPanel Orientation="Horizontal">
@@ -50,9 +51,9 @@
         <DockPanel Grid.ColumnSpan="2">
             <WrapPanel>
                 <Menu DockPanel.Dock="Top">
-                    <MenuItem Header="_File">
-                        <MenuItem Header="_Open" Click="MenuItem_Open_Click"/>
-                        <MenuItem Header="_Exit" Click="MenuItem_Exit_Click"/>
+                    <MenuItem Header="{Binding Source={StaticResource Strings}, Path=File}">
+                        <MenuItem Header="{Binding Source={StaticResource Strings}, Path=Open_Directory}" Click="MenuItem_Open_Click"/>
+                        <MenuItem Header="{Binding Source={StaticResource Strings}, Path=Exit}" Click="MenuItem_Exit_Click"/>
                     </MenuItem>
                 </Menu>
             </WrapPanel>
