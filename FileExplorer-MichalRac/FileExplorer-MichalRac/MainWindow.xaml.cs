@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.Windows.Forms;
 using System.Windows.Input;
 using FileExplorer_MichalRac.MVVM;
+using System.Globalization;
 
 namespace FileExplorer_MichalRac
 {
@@ -29,6 +30,7 @@ namespace FileExplorer_MichalRac
             this.DataContext = FileExplorer;
 
             dirView.SelectedItemChanged += DirView_SelectedItemChanged;
+            FileExplorer.PropertyChanged += FileExplorer_PropertyChanged;
         }
 
         private void DirView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -141,6 +143,14 @@ namespace FileExplorer_MichalRac
         private void MenuItem_Exit_Click(object sender, RoutedEventArgs e)
         {
             System.Windows.Application.Current.Shutdown();
+        }
+
+        private void FileExplorer_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if(e.PropertyName == nameof(FileExplorer.Lang))
+            {
+                CultureResources.ChangeCulture(CultureInfo.CurrentUICulture);
+            }
         }
     }
 }
