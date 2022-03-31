@@ -9,6 +9,13 @@
 
     public class FileSystemInfoViewModel : ViewModelBase
     {
+        public string FullPath { get; }
+
+        public FileSystemInfoViewModel(string argFullPath)
+        {
+            FullPath = argFullPath;
+        }
+
         public string Caption { get; set; }
 
         private FileSystemInfo _fileSystemInfo;

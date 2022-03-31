@@ -27,7 +27,7 @@ namespace FileExplorer_MichalRac
 
             InitializeComponent();
             FileExplorer = new FileExplorer();
-            this.DataContext = FileExplorer;
+            DataContext = FileExplorer;
 
             dirView.SelectedItemChanged += DirView_SelectedItemChanged;
             FileExplorer.PropertyChanged += FileExplorer_PropertyChanged;
@@ -35,8 +35,8 @@ namespace FileExplorer_MichalRac
 
         private void DirView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            var dtvi = (DirectoryTreeViewItem)dirView.SelectedItem;
-            var path = dtvi.FullPath;
+            var divm = (FileSystemInfoViewModel)dirView.SelectedItem;
+            var path = divm.FullPath;
 
             string rash = string.Empty;
 
@@ -52,7 +52,7 @@ namespace FileExplorer_MichalRac
         // TODO Saving path in a tag is a dirty hack, to look into creating a derived class from TextBlock that would have a special field for caching and accessing it
         private void TextBlock_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
-            var textBlock = ((TextBlock)sender);
+            var textBlock = ((FrameworkElement)sender);
             var path = textBlock.Tag.ToString();
             var contextMenu = new ContextMenu();
             textBlock.ContextMenu = contextMenu;
@@ -104,29 +104,43 @@ namespace FileExplorer_MichalRac
 
         private void FileCreated(string path)
         {
-            var dtvi = (DirectoryTreeViewItem)dirView.Items[0];
-
-            if(dtvi.FullPath == path)
-            {
-                dtvi.Refresh();
-            }
-            else if (dtvi.FindRecursive(path, out var _, out var parent))
-            {
-                parent.Refresh();
-            }
-        }
+            //var dtvi = (DirectoryTreeViewItem)dirView.Items[0];
+/*            var divm = (DirectoryInfoViewModel)dirView.Items[0];
+            divm.Update();
+*/        }
 
         private void DeleteFile(object sender, RoutedEventArgs e)
         {
-            var path = ((MenuItem)sender).Tag.ToString();
-            var dtvi = (DirectoryTreeViewItem)dirView.Items[0];
+            var path = ((FrameworkElement)sender).Tag.ToString();
+            var divm = FileExplorer.Root;
 
-            if(dtvi.FindRecursive(path, out var target, out var parent))
-            {                
-                parent.Items.Remove(target);
+            if (divm.FindRecursive(path, out var fsivm, out _) && fsivm is DirectoryInfoViewModel targetDivm)
+            {
+                targetDivm.Dispose();
             }
 
-            Directory.Delete(path, true);
+            try
+            {
+                if (Directory.Exists(path))
+                {
+                    Directory.Delete(path, true);
+                }
+                else if (File.Exists(path))
+                {
+                    File.Delete(path);
+                }
+            }
+            catch (System.Exception ex)
+            {
+                if (ex is System.UnauthorizedAccessException)
+                {
+                    System.Windows.MessageBox.Show("Unauthorized for removing readonly files");
+                }
+                else
+                {
+                    throw;
+                }
+            }
         }
 
         private void MenuItem_Open_Click(object sender, RoutedEventArgs e)

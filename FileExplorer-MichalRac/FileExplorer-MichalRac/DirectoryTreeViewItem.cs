@@ -52,29 +52,6 @@ namespace FileExplorer_MichalRac
             return result;
         }
 
-        public bool FindRecursive(string path, out DirectoryTreeViewItem result, out DirectoryTreeViewItem parent)
-        {
-            result = default;
-            parent = default;
-            foreach (var item in Items)
-            {
-                if (item.FullPath == path)
-                {
-                    parent = this;
-                    result = item;
-                    return true;
-                }
-                else
-                {
-                    if(item.FindRecursive(path, out result, out parent))
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-
         public void Refresh()
         {
             // Todo - refresh without the need of updating all elements

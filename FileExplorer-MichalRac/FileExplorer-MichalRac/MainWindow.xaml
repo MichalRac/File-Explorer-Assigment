@@ -11,14 +11,14 @@
     <Window.Resources>
         <mvvm:LangBoolConverter x:Key="LangBoolConverter"/>
         <HierarchicalDataTemplate DataType="{x:Type mvvm:DirectoryInfoViewModel}" ItemsSource="{Binding Items}">
-            <StackPanel Orientation="Horizontal">
+            <StackPanel Orientation="Horizontal" Tag="{Binding FullPath}" ContextMenuOpening="TextBlock_ContextMenuOpening" ContextMenuClosing="TextBlock_ContextMenuClosing">
                 <Image Width="16" Source="Assets/folder_closed.png"/>
-                <TextBlock Text="{Binding Caption}" Margin="10,0,0,0" FontWeight="Bold"/>
+                <TextBlock Text="{Binding Caption}" Margin="10,0,0,0" FontWeight="Bold" />
             </StackPanel>
         </HierarchicalDataTemplate>
         
         <DataTemplate DataType="{x:Type mvvm:FileInfoViewModel}">
-            <StackPanel Orientation="Horizontal">
+            <StackPanel Orientation="Horizontal" Tag="{Binding FullPath}" ContextMenuOpening="TextBlock_ContextMenuOpening" ContextMenuClosing="TextBlock_ContextMenuClosing">
                 <Image Width="16" Source="{Binding IconPath}"/>
                 <TextBlock Margin="10,0,0,0" Text="{Binding Caption}"/>
             </StackPanel>

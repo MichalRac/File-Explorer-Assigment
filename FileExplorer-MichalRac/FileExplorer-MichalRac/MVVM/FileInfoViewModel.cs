@@ -6,6 +6,8 @@
     {
         public string IconPath { get; private set; }
 
+        public FileInfoViewModel(string argFullPath) : base(argFullPath) { }
+
         public void Setup(string fileName)
         {
             var extension = Path.GetExtension(fileName);

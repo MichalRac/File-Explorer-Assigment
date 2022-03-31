@@ -15,6 +15,12 @@
         public FileSystemWatcher Watcher { get; private set; }
         public ObservableCollection<FileSystemInfoViewModel> Items { get; private set; } = new ObservableCollection<FileSystemInfoViewModel>();
 
+        public DirectoryInfoViewModel(string argFullPath) : base(argFullPath) { }
+        ~DirectoryInfoViewModel()
+        {
+            Dispose();
+        }
+
         public bool Open(string path)
         {
             bool result = false;
@@ -23,7 +29,7 @@
                 foreach(var dirName in Directory.GetDirectories(path))
                 {
                     var dirInfo = new DirectoryInfo(dirName);
-                    var itemViewModel = new DirectoryInfoViewModel();
+                    var itemViewModel = new DirectoryInfoViewModel(dirName);
                     itemViewModel.Model = dirInfo;
                     Items.Add(itemViewModel);
 
@@ -32,7 +38,7 @@
                 foreach (var fileName in Directory.GetFiles(path))
                 {
                     var fileInfo = new FileInfo(fileName);
-                    var itemViewModel = new FileInfoViewModel();
+                    var itemViewModel = new FileInfoViewModel(fileName);
                     itemViewModel.Model = fileInfo;
                     Items.Add(itemViewModel);
 
@@ -59,6 +65,17 @@
             return result;
         }
 
+        public void Dispose()
+        {
+            Watcher.Created -= OnFileSystemChanged;
+            Watcher.Renamed -= OnFileSystemChanged;
+            Watcher.Deleted -= OnFileSystemChanged;
+            Watcher.Changed -= OnFileSystemChanged;
+            Watcher.Error -= Watcher_Error;
+            Watcher.EnableRaisingEvents = false;
+            Watcher = null;
+        }
+
         private void OnFileSystemChanged(object sender, FileSystemEventArgs e)
         {
             Application.Current.Dispatcher.Invoke(() => OnFileSystemChanged(e));
@@ -72,9 +89,35 @@
             Open(path);
         }
 
+
         private void Watcher_Error(object sender, ErrorEventArgs e)
         {
             throw new NotImplementedException();
         }
+
+        public bool FindRecursive(string path, out FileSystemInfoViewModel result, out DirectoryInfoViewModel parent)
+        {
+            result = default;
+            parent = default;
+            foreach (var item in Items)
+            {
+                if (item.FullPath == path)
+                {
+                    parent = this;
+                    result = item;
+                    return true;
+                }
+                else
+                {
+                    if(item is DirectoryInfoViewModel divm 
+                        && divm.FindRecursive(path, out result, out parent))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
     }
 }

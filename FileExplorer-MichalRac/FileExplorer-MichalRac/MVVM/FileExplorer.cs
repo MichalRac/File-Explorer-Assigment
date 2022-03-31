@@ -47,7 +47,7 @@
 
         public void OpenRoot(string path)
         {
-            Root = new DirectoryInfoViewModel();
+            Root = new DirectoryInfoViewModel(path);
             Root.Open(path);
         }
     }
