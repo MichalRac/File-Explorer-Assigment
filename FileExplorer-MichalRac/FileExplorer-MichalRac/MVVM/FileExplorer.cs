@@ -9,7 +9,19 @@
 
     public class FileExplorer : ViewModelBase
     {
-        public DirectoryInfoViewModel Root { get; set; }
+        private DirectoryInfoViewModel root;
+        public DirectoryInfoViewModel Root 
+        { 
+            get { return root; } 
+            set 
+            {
+                if(root != value)
+                {
+                    root = value;
+                    NotifyPropertyChanged(nameof(Root));
+                }
+            }
+        }
 
         public string Lang
         {
@@ -29,6 +41,7 @@
 
         public FileExplorer()
         {
+            NotifyPropertyChanged(nameof(Root));
             NotifyPropertyChanged(nameof(Lang));
         }
 
