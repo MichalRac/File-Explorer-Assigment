@@ -135,4 +135,31 @@
   <data name="Sort" xml:space="preserve">
     <value>Sortuj</value>
   </data>
+  <data name="Sort_Dialog_Description" xml:space="preserve">
+    <value>Opcje sortowania</value>
+  </data>
+  <data name="Sort_By_Name" xml:space="preserve">
+    <value>Po nazwie</value>
+  </data>
+  <data name="Sort_By_Extension" xml:space="preserve">
+    <value>Po rozszerzeniu</value>
+  </data>
+  <data name="Sort_By_Size" xml:space="preserve">
+    <value>Po rozmiarze</value>
+  </data>
+  <data name="Sort_By_Modify_Date" xml:space="preserve">
+    <value>Po dacie ostatniej modyfikacji</value>
+  </data>
+  <data name="Sort_Ascending" xml:space="preserve">
+    <value>Rosnąco</value>
+  </data>
+  <data name="Sort_Descending" xml:space="preserve">
+    <value>Malejąco</value>
+  </data>
+  <data name="Generic_Ok" xml:space="preserve">
+    <value>Ok</value>
+  </data>
+  <data name="Generic_Cancel" xml:space="preserve">
+    <value>Anuluj</value>
+  </data>
 </root>

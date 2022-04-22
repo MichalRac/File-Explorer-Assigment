@@ -25,7 +25,7 @@ namespace FileExplorer_MichalRac
 
         public CreateDialog(string argPath, Action<string> argOnFileCreated)
         {
-            Topmost = true;
+            Top = 200;
             path = argPath;
             onFileCreated = argOnFileCreated;
 

@@ -88,6 +88,24 @@ namespace FileExplorer_MichalRac.MVVM {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string Generic_Cancel {
+            get {
+                return ResourceManager.GetString("Generic_Cancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ok.
+        /// </summary>
+        public static string Generic_Ok {
+            get {
+                return ResourceManager.GetString("Generic_Ok", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Open.
         /// </summary>
         public static string Open {
@@ -111,6 +129,69 @@ namespace FileExplorer_MichalRac.MVVM {
         public static string Sort {
             get {
                 return ResourceManager.GetString("Sort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ascending.
+        /// </summary>
+        public static string Sort_Ascending {
+            get {
+                return ResourceManager.GetString("Sort_Ascending", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to By extension.
+        /// </summary>
+        public static string Sort_By_Extension {
+            get {
+                return ResourceManager.GetString("Sort_By_Extension", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to By modify date.
+        /// </summary>
+        public static string Sort_By_Modify_Date {
+            get {
+                return ResourceManager.GetString("Sort_By_Modify_Date", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to By name.
+        /// </summary>
+        public static string Sort_By_Name {
+            get {
+                return ResourceManager.GetString("Sort_By_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to By size.
+        /// </summary>
+        public static string Sort_By_Size {
+            get {
+                return ResourceManager.GetString("Sort_By_Size", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Descending.
+        /// </summary>
+        public static string Sort_Descending {
+            get {
+                return ResourceManager.GetString("Sort_Descending", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sort settings.
+        /// </summary>
+        public static string Sort_Dialog_Description {
+            get {
+                return ResourceManager.GetString("Sort_Dialog_Description", resourceCulture);
             }
         }
     }

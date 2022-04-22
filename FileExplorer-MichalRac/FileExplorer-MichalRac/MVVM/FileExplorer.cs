@@ -71,7 +71,7 @@
 
         private void SortRootFolderExecute(object parameter)
         {
-            Root.SortRecursive();
+            new SortDialog() { Title = Strings.Sort_Dialog_Description }.Show();
         }
 
         private bool SortRootFolderCanExecute(object parameter)
