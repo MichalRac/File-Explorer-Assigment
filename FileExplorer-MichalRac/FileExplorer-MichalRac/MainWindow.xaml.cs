@@ -80,7 +80,7 @@ namespace FileExplorer_MichalRac
 
         private void TextBlock_ContextMenuClosing(object sender, ContextMenuEventArgs e)
         {
-            var contextMenu = ((TextBlock)sender).ContextMenu;
+            var contextMenu = ((FrameworkElement)sender).ContextMenu;
             foreach (var item in contextMenu.Items)
             {
                 ((MenuItem)item).Click -= OpenFile;
