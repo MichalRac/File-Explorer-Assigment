@@ -23,7 +23,7 @@ namespace FileExplorer_MichalRac
 
         public MainWindow()
         {
-            Topmost = true;
+            Top = 100;
 
             InitializeComponent();
             FileExplorer = new FileExplorer();
