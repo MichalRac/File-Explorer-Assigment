@@ -16,6 +16,7 @@
         public ObservableCollection<FileSystemInfoViewModel> Items { get; private set; } = new ObservableCollection<FileSystemInfoViewModel>();
 
         public DirectoryInfoViewModel(string argFullPath) : base(argFullPath) { }
+
         ~DirectoryInfoViewModel()
         {
             Dispose();
@@ -75,6 +76,28 @@
             Watcher.EnableRaisingEvents = false;
             Watcher = null;
         }
+
+        public void SortRecursive()
+        {
+            Items.OrderBy(item => item.Caption);
+
+            foreach (var itemViewModel in Items)
+            {
+                if(itemViewModel is DirectoryInfoViewModel divm)
+                {
+                    divm.SortRecursive();
+                }
+                else if(itemViewModel is FileInfoViewModel fivm)
+                {
+                    continue;
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
+            }
+        }
+
 
         private void OnFileSystemChanged(object sender, FileSystemEventArgs e)
         {

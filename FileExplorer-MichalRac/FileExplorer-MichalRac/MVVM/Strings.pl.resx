@@ -132,4 +132,7 @@
   <data name="File_Browser_Description" xml:space="preserve">
     <value>Wybierz folder do otwarcia</value>
   </data>
+  <data name="Sort" xml:space="preserve">
+    <value>Sortuj</value>
+  </data>
 </root>

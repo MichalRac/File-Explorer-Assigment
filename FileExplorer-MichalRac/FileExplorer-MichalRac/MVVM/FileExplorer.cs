@@ -41,6 +41,7 @@
             }
         }
         public RelayCommand OpenRootFolderCommand { get; private set; }
+        public RelayCommand SortRootFolderCommand { get; private set; }
 
         public FileExplorer()
         {
@@ -48,6 +49,7 @@
             NotifyPropertyChanged(nameof(Lang));
 
             OpenRootFolderCommand = new RelayCommand(OpenRootFolderExecute);
+            SortRootFolderCommand = new RelayCommand(SortRootFolderExecute, SortRootFolderCanExecute);
         }
 
         public void OpenRoot(string path)
@@ -55,6 +57,7 @@
             Root = new DirectoryInfoViewModel(path);
             Root.Open(path);
         }
+
         private void OpenRootFolderExecute(object parameter)
         {
             var dlg = new FolderBrowserDialog() { Description = Strings.File_Browser_Description };
@@ -65,5 +68,18 @@
                 OpenRoot(path);
             }
         }
+
+        private void SortRootFolderExecute(object parameter)
+        {
+            Root.SortRecursive();
+        }
+
+        private bool SortRootFolderCanExecute(object parameter)
+        {
+            return Root != null 
+                && Root.Items != null 
+                && Root.Items.Count > 0;
+        }
+
     }
 }
