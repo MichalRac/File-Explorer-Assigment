@@ -129,4 +129,7 @@
   <data name="Exit" xml:space="preserve">
     <value>Exit</value>
   </data>
+  <data name="File_Browser_Description" xml:space="preserve">
+    <value>Select directory to open</value>
+  </data>
 </root>

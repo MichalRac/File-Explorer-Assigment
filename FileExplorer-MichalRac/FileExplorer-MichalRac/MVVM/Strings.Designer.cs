@@ -29,7 +29,7 @@ namespace FileExplorer_MichalRac.MVVM {
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        public Strings() {
+        internal Strings() {
         }
         
         /// <summary>
@@ -75,6 +75,15 @@ namespace FileExplorer_MichalRac.MVVM {
         public static string File {
             get {
                 return ResourceManager.GetString("File", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select directory to open.
+        /// </summary>
+        public static string File_Browser_Description {
+            get {
+                return ResourceManager.GetString("File_Browser_Description", resourceCulture);
             }
         }
         

@@ -143,17 +143,6 @@ namespace FileExplorer_MichalRac
             }
         }
 
-        private void MenuItem_Open_Click(object sender, RoutedEventArgs e)
-        {
-            var dlg = new FolderBrowserDialog() { Description = "Select directory to open" };
-
-            if(dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                var path = dlg.SelectedPath;
-                FileExplorer.OpenRoot(path);
-            }
-        }
-
         private void MenuItem_Exit_Click(object sender, RoutedEventArgs e)
         {
             System.Windows.Application.Current.Shutdown();
