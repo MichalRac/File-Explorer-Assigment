@@ -26,5 +26,9 @@
             }
         }
 
+        public override long GetDirectorySizeRecursive()
+        {
+            return new FileInfo(FullPath).Length;
+        }
     }
 }

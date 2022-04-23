@@ -36,6 +36,13 @@ namespace FileExplorer_MichalRac
         private void DirView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             var divm = (FileSystemInfoViewModel)dirView.SelectedItem;
+
+            if(divm == null)
+            {
+                rashText.Text = string.Empty;
+                return;
+            }
+
             var path = divm.FullPath;
 
             string rash = string.Empty;

@@ -129,5 +129,10 @@
                 }
             }
         }
+
+        public virtual long GetDirectorySizeRecursive()
+        {
+            return 0;
+        }
     }
 }

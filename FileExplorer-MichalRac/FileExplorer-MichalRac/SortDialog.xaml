@@ -4,35 +4,30 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FileExplorer_MichalRac"
+        xmlns:commands="clr-namespace:FileExplorer_MichalRac.Commands"
         mc:Ignorable="d"
         Title="SortDialog" Height="300" Width="275">
     <Window.Resources>
+        <commands:DirectionBoolConverter x:Key="DirectionBoolConverter"/>
+        <commands:SortByBoolConverter x:Key="SortByBoolConverter"/>
         <Style x:Key="{x:Type RadioButton}" TargetType="{x:Type RadioButton}">
             <Setter Property="Margin" Value="5" />
-            <Setter Property="Background" Value="Aquamarine" />
         </Style>
-        <Style x:Key="{x:Type WrapPanel}" TargetType="{x:Type WrapPanel}">
-            <Setter Property="Margin" Value="5" />
-        </Style>
-        <Style x:Key="{x:Type StackPanel}" TargetType="{x:Type StackPanel}">
-            <Setter Property="Margin" Value="10" />
-        </Style>
-
 
     </Window.Resources>
     <Grid>
         <StackPanel VerticalAlignment="Center">
 
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                <RadioButton Name="nameRadio" IsChecked="true" Content="{Binding Source={StaticResource Strings}, Path=Sort_By_Name}"/>
-                <RadioButton Name="extensionRadio" Content="{Binding Source={StaticResource Strings}, Path=Sort_By_Extension}"/>
-                <RadioButton Name="sizeRadio" Content="{Binding Source={StaticResource Strings}, Path=Sort_By_Size}"/>
-                <RadioButton Name="modifyRadio" Content="{Binding Source={StaticResource Strings}, Path=Sort_By_Modify_Date}"/>
+                <RadioButton Name="nameRadio" IsChecked="{Binding SortBy, Converter={StaticResource SortByBoolConverter}, ConverterParameter=n}" Content="{Binding Source={StaticResource Strings}, Path=Sort_By_Name}"/>
+                <RadioButton Name="extensionRadio" IsChecked="{Binding SortBy, Converter={StaticResource SortByBoolConverter}, ConverterParameter=e}" Content="{Binding Source={StaticResource Strings}, Path=Sort_By_Extension}"/>
+                <RadioButton Name="sizeRadio" IsChecked="{Binding SortBy, Converter={StaticResource SortByBoolConverter}, ConverterParameter=s}" Content="{Binding Source={StaticResource Strings}, Path=Sort_By_Size}"/>
+                <RadioButton Name="modifyRadio" IsChecked="{Binding SortBy, Converter={StaticResource SortByBoolConverter}, ConverterParameter=m}" Content="{Binding Source={StaticResource Strings}, Path=Sort_By_Modify_Date}"/>
             </StackPanel>
 
             <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center" >
-                <RadioButton Name="ascRadio" IsChecked="true" Content="{Binding Source={StaticResource Strings}, Path=Sort_Ascending}"/>
-                <RadioButton Name="descRadio" Content="{Binding Source={StaticResource Strings}, Path=Sort_Descending}"/>
+                <RadioButton Name="ascRadio" IsChecked="{Binding Direction, Converter={StaticResource DirectionBoolConverter}, ConverterParameter=a}" Content="{Binding Source={StaticResource Strings}, Path=Sort_Ascending}"/>
+                <RadioButton Name="descRadio" IsChecked="{Binding Direction, Converter={StaticResource DirectionBoolConverter}, ConverterParameter=d}" Content="{Binding Source={StaticResource Strings}, Path=Sort_Descending}"/>
             </WrapPanel>
 
             <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center">

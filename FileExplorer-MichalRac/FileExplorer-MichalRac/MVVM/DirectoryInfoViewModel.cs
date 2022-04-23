@@ -1,5 +1,6 @@
 ﻿namespace FileExplorer_MichalRac.MVVM
 {
+    using FileExplorer_MichalRac.Commands;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -77,23 +78,73 @@
             Watcher = null;
         }
 
-        public void SortRecursive()
+        public void SortRecursive(SortingSettings sortingSettings)
         {
-            Items.OrderBy(item => item.Caption);
+            IOrderedEnumerable<FileSystemInfoViewModel> sorted = null;
+            switch (sortingSettings.Direction)
+            {
+                case Direction.Ascending:
+                    switch (sortingSettings.SortBy)
+                    {
+                        case SortBy.Name:
+                            sorted = Items.OrderBy(i => i.Caption);
+                            break;
+                        case SortBy.Extension:
+                            sorted = Items.OrderBy(i => Path.GetExtension(i.FullPath));
+                            break;
+                        case SortBy.Size:
+                            sorted = Items.OrderBy(i => i.GetDirectorySizeRecursive());
+                            break;
+                        case SortBy.ModifyDate:
+                            sorted = Items.OrderBy(i => i.LastWriteTime);
+                            break;
+                    }
+                    break;
+                case Direction.Descending:
+                    switch (sortingSettings.SortBy)
+                    {
+                        case SortBy.Name:
+                            sorted = Items.OrderByDescending(i => i.Caption);
+                            break;
+                        case SortBy.Extension:
+                            sorted = Items.OrderByDescending(i => Path.GetExtension(i.FullPath));
+                            break;
+                        case SortBy.Size:
+                            sorted = Items.OrderByDescending(i => i.GetDirectorySizeRecursive());
+                            break;
+                        case SortBy.ModifyDate:
+                            sorted = Items.OrderByDescending(i => i.LastWriteTime);
+                            break;
+                    }
+                    break;
+            }
+
+            if(sorted != null)
+            {
+                List<FileSystemInfoViewModel> temp = new List<FileSystemInfoViewModel>();
+                temp.AddRange(sorted);
+
+                Items.Clear();
+
+                foreach (var item in temp)
+                {
+                    if(item is DirectoryInfoViewModel divm)
+                        Items.Add(divm);
+                }
+
+                foreach (var item in temp)
+                {
+                    if (item is FileInfoViewModel fivm)
+                        Items.Add(fivm);
+                }
+
+            }
 
             foreach (var itemViewModel in Items)
             {
                 if(itemViewModel is DirectoryInfoViewModel divm)
                 {
-                    divm.SortRecursive();
-                }
-                else if(itemViewModel is FileInfoViewModel fivm)
-                {
-                    continue;
-                }
-                else
-                {
-                    throw new NotImplementedException();
+                    divm.SortRecursive(sortingSettings);
                 }
             }
         }
@@ -140,6 +191,18 @@
                 }
             }
             return false;
+        }
+
+        public override long GetDirectorySizeRecursive()
+        {
+            long total = 0;
+
+            foreach(var item in Items)
+            {
+                total += item.GetDirectorySizeRecursive();
+            }
+
+            return total;
         }
 
     }

@@ -40,8 +40,29 @@
                 }
             }
         }
+
         public RelayCommand OpenRootFolderCommand { get; private set; }
         public RelayCommand SortRootFolderCommand { get; private set; }
+
+        private SortingSettings sortingSettings;
+        public SortingSettings SortingSettings
+        {
+            get 
+            { 
+                if(sortingSettings == null)
+                {
+                    sortingSettings = new SortingSettings();
+                }
+                return sortingSettings; 
+            }
+            set 
+            { 
+                if(sortingSettings != value)
+                {
+                    sortingSettings = value;
+                }
+            }
+        }
 
         public FileExplorer()
         {
@@ -71,7 +92,14 @@
 
         private void SortRootFolderExecute(object parameter)
         {
-            new SortDialog() { Title = Strings.Sort_Dialog_Description }.Show();
+            new SortDialog(SortingSettings, SortDialog_OnOkayButton) { Title = Strings.Sort_Dialog_Description }.Show();
+        }
+
+        private void SortDialog_OnOkayButton(SortingSettings argSortingSettings)
+        {
+            SortingSettings = argSortingSettings;
+
+            Root.SortRecursive(argSortingSettings);
         }
 
         private bool SortRootFolderCanExecute(object parameter)
