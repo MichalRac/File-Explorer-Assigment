@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Globalization;
+    using System.IO;
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
@@ -41,8 +42,11 @@
             }
         }
 
+        public event EventHandler<FileInfoViewModel> OnOpenFileRequest;
+
         public RelayCommand OpenRootFolderCommand { get; private set; }
         public RelayCommand SortRootFolderCommand { get; private set; }
+        public RelayCommand OpenFileCommand { get; private set; }
 
         private SortingSettings sortingSettings;
         public SortingSettings SortingSettings
@@ -71,11 +75,11 @@
 
             OpenRootFolderCommand = new RelayCommand(OpenRootFolderExecute);
             SortRootFolderCommand = new RelayCommand(SortRootFolderExecute, SortRootFolderCanExecute);
+            OpenFileCommand = new RelayCommand(OpenFileExecute, OpenFileCanExecute); ;
         }
-
         public void OpenRoot(string path)
         {
-            Root = new DirectoryInfoViewModel(path);
+            Root = new DirectoryInfoViewModel(path, this);
             Root.Open(path);
         }
 
@@ -109,5 +113,33 @@
                 && Root.Items.Count > 0;
         }
 
+        public static readonly string[] TextFilesExtensions = new string[] { ".txt", ".ini", ".log" };
+        public bool OpenFileCanExecute(object parameter)
+        {
+            if (parameter is FileInfoViewModel viewModel)
+            {
+                var extension = Path.GetExtension(viewModel.FullPath)?.ToLower();
+                return TextFilesExtensions.Contains(extension);
+            }
+            return false;
+        }
+
+        public void OpenFileExecute(object obj)
+        {
+            OnOpenFileRequest.Invoke(this, (FileInfoViewModel)obj);
+        }
+
+        public object GetFileContent(FileInfoViewModel viewModel)
+        {
+            var extension = Path.GetExtension(viewModel.FullPath)?.ToLower();
+            if (TextFilesExtensions.Contains(extension))
+            {
+                var loadedTextFile = new LoadedTextFile();
+                loadedTextFile.TryLoadNewText(viewModel.FullPath);
+                var content = loadedTextFile.LoadedText;
+                return content;
+            }
+            return null;
+        }
     }
 }

@@ -124,6 +124,15 @@ namespace FileExplorer_MichalRac.MVVM {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Open file.
+        /// </summary>
+        public static string Open_File {
+            get {
+                return ResourceManager.GetString("Open_File", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sort.
         /// </summary>
         public static string Sort {

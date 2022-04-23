@@ -16,7 +16,7 @@
         public FileSystemWatcher Watcher { get; private set; }
         public ObservableCollection<FileSystemInfoViewModel> Items { get; private set; } = new ObservableCollection<FileSystemInfoViewModel>();
 
-        public DirectoryInfoViewModel(string argFullPath) : base(argFullPath) { }
+        public DirectoryInfoViewModel(string argFullPath, ViewModelBase owner) : base(argFullPath, owner) { }
 
         ~DirectoryInfoViewModel()
         {
@@ -31,7 +31,7 @@
                 foreach(var dirName in Directory.GetDirectories(path))
                 {
                     var dirInfo = new DirectoryInfo(dirName);
-                    var itemViewModel = new DirectoryInfoViewModel(dirName);
+                    var itemViewModel = new DirectoryInfoViewModel(dirName, this);
                     itemViewModel.Model = dirInfo;
                     Items.Add(itemViewModel);
 
@@ -40,7 +40,7 @@
                 foreach (var fileName in Directory.GetFiles(path))
                 {
                     var fileInfo = new FileInfo(fileName);
-                    var itemViewModel = new FileInfoViewModel(fileName);
+                    var itemViewModel = new FileInfoViewModel(fileName, this);
                     itemViewModel.Model = fileInfo;
                     Items.Add(itemViewModel);
 

@@ -31,6 +31,16 @@ namespace FileExplorer_MichalRac
 
             dirView.SelectedItemChanged += DirView_SelectedItemChanged;
             FileExplorer.PropertyChanged += FileExplorer_PropertyChanged;
+            FileExplorer.OnOpenFileRequest += FileExplorer_OnOpenFileRequest;
+        }
+
+        private void FileExplorer_OnOpenFileRequest(object? sender, FileInfoViewModel viewModel)
+        {
+            var content = FileExplorer.GetFileContent(viewModel);
+            if (content is string text)
+            {
+                fText.Text = text;
+            }
         }
 
         private void DirView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -59,7 +69,7 @@ namespace FileExplorer_MichalRac
         // TODO Saving path in a tag is a dirty hack, to look into creating a derived class from TextBlock that would have a special field for caching and accessing it
         private void TextBlock_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
-            var textBlock = ((FrameworkElement)sender);
+/*            var textBlock = ((FrameworkElement)sender);
             var path = textBlock.Tag.ToString();
             var contextMenu = new ContextMenu();
             textBlock.ContextMenu = contextMenu;
@@ -83,18 +93,18 @@ namespace FileExplorer_MichalRac
             contextMenu.Items.Add(miDelete);
 
             contextMenu.IsOpen = true;
-        }
+*/        }
 
         private void TextBlock_ContextMenuClosing(object sender, ContextMenuEventArgs e)
         {
-            var contextMenu = ((FrameworkElement)sender).ContextMenu;
+/*            var contextMenu = ((FrameworkElement)sender).ContextMenu;
             foreach (var item in contextMenu.Items)
             {
                 ((MenuItem)item).Click -= OpenFile;
                 ((MenuItem)item).Click -= CreateFile;
                 ((MenuItem)item).Click -= DeleteFile;
             }
-        }
+*/        }
 
         private void OpenFile(object sender, RoutedEventArgs e)
         {

@@ -9,11 +9,13 @@
 
     public class FileSystemInfoViewModel : ViewModelBase
     {
+        public ViewModelBase Owner { get; private set; }
         public string FullPath { get; }
 
-        public FileSystemInfoViewModel(string argFullPath)
+        public FileSystemInfoViewModel(string argFullPath, ViewModelBase owner)
         {
             FullPath = argFullPath;
+            Owner = owner;
         }
 
         public string Caption { get; set; }
@@ -38,6 +40,20 @@
 
                     NotifyPropertyChanged();
                 }
+            }
+        }
+        public FileExplorer OwnerExplorer
+        {
+            get
+            {
+                var owner = Owner;
+                while (owner is DirectoryInfoViewModel ownerDirectory)
+                {
+                    if (ownerDirectory.Owner is FileExplorer explorer)
+                        return explorer;
+                    owner = ownerDirectory.Owner;
+                }
+                return null;
             }
         }
 

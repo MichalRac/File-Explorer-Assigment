@@ -162,4 +162,7 @@
   <data name="Generic_Cancel" xml:space="preserve">
     <value>Cancel</value>
   </data>
+  <data name="Open_File" xml:space="preserve">
+    <value>Open file</value>
+  </data>
 </root>
