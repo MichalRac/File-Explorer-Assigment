@@ -128,18 +128,29 @@
             new SortDialog(SortingSettings, SortDialog_OnOkayButton) { Title = Strings.Sort_Dialog_Description }.Show();
         }
 
-        private void SortDialog_OnOkayButton(SortingSettings argSortingSettings)
+        private async void SortDialog_OnOkayButton(SortingSettings argSortingSettings)
         {
             SortingSettings = argSortingSettings;
 
-            Root.SortRecursive(argSortingSettings);
+            StatusMessage = Strings.Sorting + Path.GetDirectoryName(root.FullPath);
+
+            await Task.Factory.StartNew(async () =>
+            {
+                Root.SortRecursive(argSortingSettings);
+                // Just to show it works on smaller directory trees
+                System.Threading.Thread.Sleep(1000);
+            });
+
+            StatusMessage = Strings.Ready;
+
         }
 
         private bool SortRootFolderCanExecute(object parameter)
         {
             return Root != null 
                 && Root.Items != null 
-                && Root.Items.Count > 0;
+                && Root.Items.Count > 0
+                && StatusMessage != Strings.Loading;
         }
 
         public static readonly string[] TextFilesExtensions = new string[] { ".txt", ".ini", ".log" };

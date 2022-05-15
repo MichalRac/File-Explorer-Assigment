@@ -221,5 +221,14 @@ namespace FileExplorer_MichalRac.MVVM {
                 return ResourceManager.GetString("Sort_Dialog_Description", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sorting directory: .
+        /// </summary>
+        public static string Sorting {
+            get {
+                return ResourceManager.GetString("Sorting", resourceCulture);
+            }
+        }
     }
 }
