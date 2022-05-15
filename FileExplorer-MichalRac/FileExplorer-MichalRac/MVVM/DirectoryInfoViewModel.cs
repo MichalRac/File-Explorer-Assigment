@@ -1,9 +1,12 @@
 ﻿namespace FileExplorer_MichalRac.MVVM
 {
+    using FileExplorer_MichalRac.Asyncs;
     using FileExplorer_MichalRac.Commands;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.Collections.Specialized;
+    using System.ComponentModel;
     using System.IO;
     using System.Linq;
     using System.Text;
@@ -14,7 +17,7 @@
     {
         public Exception Exception { get; private set; }
         public FileSystemWatcher Watcher { get; private set; }
-        public ObservableCollection<FileSystemInfoViewModel> Items { get; private set; } = new ObservableCollection<FileSystemInfoViewModel>();
+        public DispatchedObservableCollection<FileSystemInfoViewModel> Items { get; private set; } = new DispatchedObservableCollection<FileSystemInfoViewModel>();
 
         public DirectoryInfoViewModel(string argFullPath, ViewModelBase owner) : base(argFullPath, owner) { }
 
@@ -26,34 +29,37 @@
         public bool Open(string path)
         {
             bool result = false;
-            try
+            foreach (var dirName in Directory.GetDirectories(path))
             {
-                foreach(var dirName in Directory.GetDirectories(path))
-                {
-                    var dirInfo = new DirectoryInfo(dirName);
-                    var itemViewModel = new DirectoryInfoViewModel(dirName, this);
-                    itemViewModel.Model = dirInfo;
-                    Items.Add(itemViewModel);
+                var dirInfo = new DirectoryInfo(dirName);
+                var itemViewModel = new DirectoryInfoViewModel(dirName, this);
+                itemViewModel.Model = dirInfo;
 
-                    itemViewModel.Open(dirName);
-                }
-                foreach (var fileName in Directory.GetFiles(path))
+                try
                 {
-                    var fileInfo = new FileInfo(fileName);
-                    var itemViewModel = new FileInfoViewModel(fileName, this);
-                    itemViewModel.Model = fileInfo;
-                    Items.Add(itemViewModel);
+                    if (itemViewModel.Open(dirName))
+                    {
+                        Items.Add(itemViewModel);
+                    }
 
-                    itemViewModel.Setup(fileName);
                 }
-                result = true;
+                catch (Exception ex)
+                {
+                    Exception = ex;
+                }
             }
-            catch (Exception ex)
+            foreach (var fileName in Directory.GetFiles(path))
             {
-                Exception = ex;
-            }
+                var fileInfo = new FileInfo(fileName);
+                var itemViewModel = new FileInfoViewModel(fileName, this);
+                itemViewModel.Model = fileInfo;
+                Items.Add(itemViewModel);
 
-            if(Watcher == null)
+                itemViewModel.Setup(fileName);
+            }
+            result = true;
+
+            if(Watcher == null && result == true)
             {
                 Watcher = new FileSystemWatcher(path);
                 Watcher.Created += OnFileSystemChanged;
@@ -69,13 +75,16 @@
 
         public void Dispose()
         {
-            Watcher.Created -= OnFileSystemChanged;
-            Watcher.Renamed -= OnFileSystemChanged;
-            Watcher.Deleted -= OnFileSystemChanged;
-            Watcher.Changed -= OnFileSystemChanged;
-            Watcher.Error -= Watcher_Error;
-            Watcher.EnableRaisingEvents = false;
-            Watcher = null;
+            if(Watcher != null)
+            {
+                Watcher.Created -= OnFileSystemChanged;
+                Watcher.Renamed -= OnFileSystemChanged;
+                Watcher.Deleted -= OnFileSystemChanged;
+                Watcher.Changed -= OnFileSystemChanged;
+                Watcher.Error -= Watcher_Error;
+                Watcher.EnableRaisingEvents = false;
+                Watcher = null;
+            }
         }
 
         public void SortRecursive(SortingSettings sortingSettings)
@@ -205,5 +214,35 @@
             return total;
         }
 
+        private void Root_PropertyChanged(object sender, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "StatusMessage" && sender is FileSystemInfoViewModel viewModel)
+                StatusMessage = viewModel.StatusMessage;
+        }
+
+        private void Items_CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            switch (args.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (var item in args.NewItems.Cast<FileSystemInfoViewModel>())
+                    {
+                        item.PropertyChanged += Item_PropertyChanged;
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (var item in args.NewItems.Cast<FileSystemInfoViewModel>())
+                    {
+                        item.PropertyChanged -= Item_PropertyChanged;
+                    }
+                    break;
+            }
+        }
+
+        private void Item_PropertyChanged(object? sender, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "StatusMessage" && sender is FileSystemInfoViewModel viewModel)
+                this.StatusMessage = viewModel.StatusMessage;
+        }
     }
 }

@@ -146,6 +146,20 @@
             }
         }
 
+        private string statusMessage;
+        public string StatusMessage
+        {
+            get
+            {
+                return statusMessage;
+            }
+            protected set
+            {
+                statusMessage = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         public virtual long GetDirectorySizeRecursive()
         {
             return 0;

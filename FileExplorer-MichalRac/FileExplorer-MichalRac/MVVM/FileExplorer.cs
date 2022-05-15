@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Globalization;
     using System.IO;
     using System.Linq;
@@ -67,20 +68,34 @@
                 }
             }
         }
+        private string statusMessage;
+        public string StatusMessage { 
+            get
+            {
+                return statusMessage;
+            }
+            protected set
+            {
+                statusMessage = value;
+                NotifyPropertyChanged();
+            }
+        }
 
         public FileExplorer()
         {
             NotifyPropertyChanged(nameof(Root));
             NotifyPropertyChanged(nameof(Lang));
 
-            OpenRootFolderCommand = new RelayCommand(OpenRootFolderExecute);
+            OpenRootFolderCommand = new RelayCommand(OpenRootFolderExecuteAsync);
             SortRootFolderCommand = new RelayCommand(SortRootFolderExecute, SortRootFolderCanExecute);
             OpenFileCommand = new RelayCommand(OpenFileExecute, OpenFileCanExecute); ;
         }
         public void OpenRoot(string path)
         {
             Root = new DirectoryInfoViewModel(path, this);
+            StatusMessage = Strings.Loading;
             Root.Open(path);
+            StatusMessage = Strings.Ready;
         }
 
         private void OpenRootFolderExecute(object parameter)
@@ -91,6 +106,20 @@
             {
                 var path = dlg.SelectedPath;
                 OpenRoot(path);
+            }
+        }
+
+        private async void OpenRootFolderExecuteAsync(object paramter)
+        {
+            var dlg = new FolderBrowserDialog() { Description = Strings.File_Browser_Description };
+
+            if (dlg.ShowDialog() == DialogResult.OK)
+            {
+                await Task.Factory.StartNew(() =>
+                {
+                    var path = dlg.SelectedPath;
+                    OpenRoot(path);
+                });
             }
         }
 
@@ -140,6 +169,12 @@
                 return content;
             }
             return null;
+        }
+
+        public void Root_PropertyChanged(object sender, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "StatusMessage" && sender is FileSystemInfoViewModel viewModel)
+                StatusMessage = viewModel.StatusMessage;
         }
     }
 }

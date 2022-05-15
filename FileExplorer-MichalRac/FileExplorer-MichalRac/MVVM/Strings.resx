@@ -165,4 +165,10 @@
   <data name="Open_File" xml:space="preserve">
     <value>Open file</value>
   </data>
+  <data name="Loading" xml:space="preserve">
+    <value>Loading</value>
+  </data>
+  <data name="Ready" xml:space="preserve">
+    <value>Ready</value>
+  </data>
 </root>
