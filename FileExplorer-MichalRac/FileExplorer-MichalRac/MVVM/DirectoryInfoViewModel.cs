@@ -7,9 +7,11 @@
     using System.Collections.ObjectModel;
     using System.Collections.Specialized;
     using System.ComponentModel;
+    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Text;
+    using System.Threading;
     using System.Threading.Tasks;
     using System.Windows;
 
@@ -87,7 +89,7 @@
             }
         }
 
-        public void SortRecursive(SortingSettings sortingSettings)
+        public async void SortRecursive(SortingSettings sortingSettings)
         {
             IOrderedEnumerable<FileSystemInfoViewModel> sorted = null;
             switch (sortingSettings.Direction)
@@ -149,13 +151,29 @@
 
             }
 
-            foreach (var itemViewModel in Items)
+
+            var subFolders = new List<DirectoryInfoViewModel>();
+            foreach (var item in Items)
             {
-                if(itemViewModel is DirectoryInfoViewModel divm)
+                if(item is DirectoryInfoViewModel divm)
                 {
-                    divm.SortRecursive(sortingSettings);
+                    subFolders.Add(divm);
                 }
             }
+
+            Task[] taskArray = new Task[subFolders.Count];
+
+            for (int i = 0; i < subFolders.Count; i++)
+            {
+                var currentLoopCache = i;
+                taskArray[i] = Task.Factory.StartNew(() =>
+                {
+                    Debug.WriteLine($"ThreadId {Thread.CurrentThread.ManagedThreadId}, sorting directory: {subFolders[currentLoopCache].Caption}");
+                    subFolders[currentLoopCache].SortRecursive(sortingSettings);
+                    Debug.WriteLine($"Directory: {subFolders[currentLoopCache].Caption} - Sorted");
+                });
+            }             
+            Task.WaitAll(taskArray);
         }
 
 

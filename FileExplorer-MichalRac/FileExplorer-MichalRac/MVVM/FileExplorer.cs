@@ -138,11 +138,8 @@
             {
                 Root.SortRecursive(argSortingSettings);
                 // Just to show it works on smaller directory trees
-                System.Threading.Thread.Sleep(1000);
             });
-
             StatusMessage = Strings.Ready;
-
         }
 
         private bool SortRootFolderCanExecute(object parameter)
