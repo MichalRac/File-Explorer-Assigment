@@ -97,6 +97,15 @@ namespace FileExplorer_MichalRac.MVVM {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cancelled.
+        /// </summary>
+        public static string Generic_Cancelled {
+            get {
+                return ResourceManager.GetString("Generic_Cancelled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ok.
         /// </summary>
         public static string Generic_Ok {

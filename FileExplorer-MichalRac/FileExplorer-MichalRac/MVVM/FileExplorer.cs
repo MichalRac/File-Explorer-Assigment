@@ -3,16 +3,19 @@
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.Diagnostics;
     using System.Globalization;
     using System.IO;
     using System.Linq;
     using System.Text;
+    using System.Threading;
     using System.Threading.Tasks;
     using System.Windows.Forms;
     using FileExplorer_MichalRac.Commands;
 
     public class FileExplorer : ViewModelBase
     {
+        public static int MaxThreadId = 0;
         private DirectoryInfoViewModel root;
         public DirectoryInfoViewModel Root 
         { 
@@ -48,6 +51,9 @@
         public RelayCommand OpenRootFolderCommand { get; private set; }
         public RelayCommand SortRootFolderCommand { get; private set; }
         public RelayCommand OpenFileCommand { get; private set; }
+        public RelayCommand CancelSortingCommand { get; private set; }
+        private CancellationTokenSource sortingCancellationTokenSource;
+        private bool isSorting = false;
 
         private SortingSettings sortingSettings;
         public SortingSettings SortingSettings
@@ -88,8 +94,11 @@
 
             OpenRootFolderCommand = new RelayCommand(OpenRootFolderExecuteAsync);
             SortRootFolderCommand = new RelayCommand(SortRootFolderExecute, SortRootFolderCanExecute);
-            OpenFileCommand = new RelayCommand(OpenFileExecute, OpenFileCanExecute); ;
+            OpenFileCommand = new RelayCommand(OpenFileExecute, OpenFileCanExecute);
+            CancelSortingCommand = new RelayCommand(CancelSortingExecute, CancelSortingCanExecute);
         }
+
+
         public void OpenRoot(string path)
         {
             Root = new DirectoryInfoViewModel(path, this);
@@ -111,15 +120,30 @@
 
         private async void OpenRootFolderExecuteAsync(object paramter)
         {
+            sortingCancellationTokenSource = new CancellationTokenSource();
+
             var dlg = new FolderBrowserDialog() { Description = Strings.File_Browser_Description };
 
             if (dlg.ShowDialog() == DialogResult.OK)
             {
-                await Task.Factory.StartNew(() =>
+                try
                 {
-                    var path = dlg.SelectedPath;
-                    OpenRoot(path);
-                });
+                    await Task.Factory.StartNew(() =>
+                    {
+                        var path = dlg.SelectedPath;
+                        OpenRoot(path);
+                    }, sortingCancellationTokenSource.Token);
+
+                }
+                catch (OperationCanceledException)
+                {
+                    StatusMessage = Strings.Generic_Cancelled;
+                }
+                finally
+                {
+                    sortingCancellationTokenSource.Dispose();
+                    sortingCancellationTokenSource = new CancellationTokenSource();
+                }
             }
         }
 
@@ -132,14 +156,35 @@
         {
             SortingSettings = argSortingSettings;
 
-            StatusMessage = Strings.Sorting + Path.GetDirectoryName(root.FullPath);
+            sortingCancellationTokenSource = new CancellationTokenSource();
 
-            await Task.Factory.StartNew(async () =>
+            StatusMessage = Strings.Sorting + Path.GetDirectoryName(root.FullPath);
+            isSorting = true;
+
+            await Task.Factory.StartNew(() =>
             {
-                Root.SortRecursive(argSortingSettings);
-                // Just to show it works on smaller directory trees
-            });
-            StatusMessage = Strings.Ready;
+
+                try
+                {
+                    Root.SortRecursive(argSortingSettings, sortingCancellationTokenSource.Token);
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine($"\n{nameof(OperationCanceledException)} thrown\n");
+                }
+                finally
+                {
+                    sortingCancellationTokenSource.Dispose();
+                    sortingCancellationTokenSource = new CancellationTokenSource();
+
+                    StatusMessage = Strings.Ready;
+                    Debug.WriteLine($"MaxThreadId: {MaxThreadId}");
+
+                    isSorting = false;
+                }
+
+            }, sortingCancellationTokenSource.Token);
+
         }
 
         private bool SortRootFolderCanExecute(object parameter)
@@ -159,6 +204,20 @@
                 return TextFilesExtensions.Contains(extension);
             }
             return false;
+        }
+
+        private bool CancelSortingCanExecute(object obj)
+        {
+            return sortingCancellationTokenSource != null && isSorting;
+        }
+
+        private void CancelSortingExecute(object obj)
+        {
+            if(sortingCancellationTokenSource != null)
+            {
+                sortingCancellationTokenSource.Cancel();
+                Console.WriteLine("Task cancellation requested.");
+            }
         }
 
         public void OpenFileExecute(object obj)

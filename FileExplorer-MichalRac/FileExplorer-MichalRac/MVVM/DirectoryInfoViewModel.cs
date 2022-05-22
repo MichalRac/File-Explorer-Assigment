@@ -89,8 +89,14 @@
             }
         }
 
-        public async void SortRecursive(SortingSettings sortingSettings)
+        public void SortRecursive(SortingSettings sortingSettings, CancellationToken ct)
         {
+            // Was cancellation already requested?
+            if (ct.IsCancellationRequested)
+            {
+                return;
+            }
+
             IOrderedEnumerable<FileSystemInfoViewModel> sorted = null;
             switch (sortingSettings.Direction)
             {
@@ -165,15 +171,54 @@
 
             for (int i = 0; i < subFolders.Count; i++)
             {
+
                 var currentLoopCache = i;
+
                 taskArray[i] = Task.Factory.StartNew(() =>
                 {
+                    // Was cancellation already requested?
+                    if (ct.IsCancellationRequested)
+                    {
+                        Console.WriteLine($"Task {Thread.CurrentThread.ManagedThreadId} was cancelled.");
+                        ct.ThrowIfCancellationRequested();
+                    }
+
+                    // Dla przykładowego folderu
+                    // Maksymalny id wątku - 24
+                    // Max id LongRunning - 47
+
                     Debug.WriteLine($"ThreadId {Thread.CurrentThread.ManagedThreadId}, sorting directory: {subFolders[currentLoopCache].Caption}");
-                    subFolders[currentLoopCache].SortRecursive(sortingSettings);
-                    Debug.WriteLine($"Directory: {subFolders[currentLoopCache].Caption} - Sorted");
-                });
-            }             
-            Task.WaitAll(taskArray);
+
+
+                    subFolders[currentLoopCache].SortRecursive(sortingSettings, ct);
+
+                    Debug.WriteLine($"Sorted directory: {subFolders[currentLoopCache].Caption}");
+
+                    if (FileExplorer.MaxThreadId < Thread.CurrentThread.ManagedThreadId)
+                        FileExplorer.MaxThreadId = Thread.CurrentThread.ManagedThreadId;
+                }, ct);
+            }
+
+
+            try
+            {
+                Task.WaitAll(taskArray);
+            }
+            catch (AggregateException)
+            {
+                StatusMessage = Strings.Generic_Cancel;
+                return;
+            }
+            catch (OperationCanceledException)
+            {
+                StatusMessage = Strings.Generic_Cancelled;
+                return;
+            }
+
+            if (ct.IsCancellationRequested)
+            {
+                return;
+            }
         }
 
 
