@@ -51,6 +51,7 @@
         public RelayCommand OpenRootFolderCommand { get; private set; }
         public RelayCommand SortRootFolderCommand { get; private set; }
         public RelayCommand OpenFileCommand { get; private set; }
+        public RelayCommand DBStuffCommand { get; private set; }
         public RelayCommand CancelSortingCommand { get; private set; }
         private CancellationTokenSource sortingCancellationTokenSource;
         private bool isSorting = false;
@@ -96,8 +97,18 @@
             SortRootFolderCommand = new RelayCommand(SortRootFolderExecute, SortRootFolderCanExecute);
             OpenFileCommand = new RelayCommand(OpenFileExecute, OpenFileCanExecute);
             CancelSortingCommand = new RelayCommand(CancelSortingExecute, CancelSortingCanExecute);
+            DBStuffCommand = new RelayCommand(DBStuffExecute, DbStuffCanExecute);
         }
 
+        private void DBStuffExecute(object obj)
+        {
+            var fileManager = new FileExplorerBusinessLogic_MichalRac.FileManager();
+            var users = fileManager.GetUsers();
+            fileManager.CreateUser(new FileExplorerBusinessLogic_MichalRac.UserDto() { Id = 0, Login = "admin", Password = "admin", Ip = "255.255.255.255" });
+            users = fileManager.GetUsers();
+        }
+
+        private bool DbStuffCanExecute(object obj) => true;
 
         public void OpenRoot(string path)
         {

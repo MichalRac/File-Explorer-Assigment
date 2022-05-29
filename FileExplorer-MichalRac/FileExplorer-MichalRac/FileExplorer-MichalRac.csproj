@@ -9,6 +9,10 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+	<ItemGroup>
+		<ProjectReference Include="..\FileExplorerBusinessLogic-MichalRac\FileExplorerBusinessLogic-MichalRac.csproj" />
+	</ItemGroup>
+	
   <ItemGroup>
     <None Remove="Assets\folder_closed.png" />
     <None Remove="Assets\pdf-file.png" />
