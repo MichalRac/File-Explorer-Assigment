@@ -127,34 +127,110 @@ namespace FileExplorer_MichalRac
             rashText.Text = rash;
         }
 
+        private string currentFullPath;
         // TODO Saving path in a tag is a dirty hack, to look into creating a derived class from TextBlock that would have a special field for caching and accessing it
         private void TextBlock_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
-/*            var textBlock = ((FrameworkElement)sender);
-            var path = textBlock.Tag.ToString();
             var contextMenu = new ContextMenu();
-            textBlock.ContextMenu = contextMenu;
+            var sp = ((StackPanel)sender);
+            sp.ContextMenu = contextMenu;
+            currentFullPath = (string)sp.Tag;
 
-            var isDirectory = Directory.Exists(path);
-            if (isDirectory)
+            var metadataMenuItem = new MenuItem() { Header = "Metadata" };
+            metadataMenuItem.Click += MetadataMenuItem_Click;
+
+            var accessMenuItem = new MenuItem() { Header = "Access" };
+            accessMenuItem.Click += AccessMenuItem_Click;
+
+            contextMenu.Items.Add(metadataMenuItem);
+            contextMenu.Items.Add(accessMenuItem);
+
+
+
+
+            /*            var textBlock = ((FrameworkElement)sender);
+                        var path = textBlock.Tag.ToString();
+                        var contextMenu = new ContextMenu();
+                        textBlock.ContextMenu = contextMenu;
+
+                        var isDirectory = Directory.Exists(path);
+                        if (isDirectory)
+                        {
+                            var miCreate = new MenuItem() { Header = "Create", Tag = textBlock.Tag };
+                            miCreate.Click += CreateFile;
+                            contextMenu.Items.Add(miCreate);
+                        }
+                        else
+                        {
+                            var miOpen = new MenuItem() { Header = "Open", Tag = textBlock.Tag };
+                            miOpen.Click += OpenFile;
+                            contextMenu.Items.Add(miOpen);
+                        }
+
+                        var miDelete = new MenuItem() { Header = "Delete", Tag = textBlock.Tag };
+                        miDelete.Click += DeleteFile;
+                        contextMenu.Items.Add(miDelete);
+
+                        contextMenu.IsOpen = true;
+            */
+        }
+
+        private void AccessMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            new AccessWindow(currentFullPath).Show();
+        }
+
+        private void MetadataMenuItem_Click(object sender, RoutedEventArgs e)
+         {
+            var fileManager = new FileManager();
+            if (!fileManager.MetadataExists(currentFullPath))
             {
-                var miCreate = new MenuItem() { Header = "Create", Tag = textBlock.Tag };
-                miCreate.Click += CreateFile;
-                contextMenu.Items.Add(miCreate);
+                fileManager.CreateMetadata(new MetadataDto() 
+                {
+                    FullPath = currentFullPath,
+                    Contributor = string.Empty,
+                    Coverage = string.Empty,
+                    Creator = string.Empty,
+                    Date = string.Empty,
+                    Description = string.Empty,
+                    Format = string.Empty,
+                    Identifier = string.Empty,
+                    Language = string.Empty,
+                    Publisher = string.Empty,
+                    Relation = string.Empty,
+                    Rights = string.Empty,
+                    Source = string.Empty,
+                    Subject = string.Empty,
+                    Title = string.Empty,
+                    Type = string.Empty,
+                });
             }
-            else
+            var metadata = fileManager.GetMetadata(currentFullPath);
+            new MetadataWindow(fileManager.ConvertMetadataToDto(metadata), (model) =>
             {
-                var miOpen = new MenuItem() { Header = "Open", Tag = textBlock.Tag };
-                miOpen.Click += OpenFile;
-                contextMenu.Items.Add(miOpen);
-            }
+                fileManager.CreateOrUpdate(new MetadataDto()
+                {
+                    Id = metadata.ID,
+                    FullPath = metadata.FullPath,
+                    Contributor = metadata.Contributor,
+                    Coverage = metadata.Coverage,
+                    Creator = metadata.Creator,
+                    Date = metadata.Date,
+                    Description = metadata.Description,
+                    Format = metadata.Format,
+                    Identifier = metadata.Identifier,
+                    Language = metadata.Language,
+                    Publisher = metadata.Publisher,
+                    Relation = metadata.Relation,
+                    Rights = metadata.Rights,
+                    Source = metadata.Source,
+                    Subject = metadata.Subject,
+                    Title = metadata.Title,
+                    Type = metadata.Type,
+                });
+            }).Show();
 
-            var miDelete = new MenuItem() { Header = "Delete", Tag = textBlock.Tag };
-            miDelete.Click += DeleteFile;
-            contextMenu.Items.Add(miDelete);
-
-            contextMenu.IsOpen = true;
-*/        }
+        }
 
         private void TextBlock_ContextMenuClosing(object sender, ContextMenuEventArgs e)
         {

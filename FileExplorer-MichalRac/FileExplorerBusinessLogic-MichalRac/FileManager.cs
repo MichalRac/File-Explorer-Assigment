@@ -26,6 +26,7 @@ namespace FileExplorerBusinessLogic_MichalRac
             return false;
         }
 
+        #region User
         public bool CheckInitUser()
         {
             return dbContext.Users.Select(user => user.Login == HostUserName).FirstOrDefault();
@@ -154,6 +155,218 @@ namespace FileExplorerBusinessLogic_MichalRac
                 CreateUser(user);
         }
 
+        #endregion
+
+        #region Metadata
+
+        public bool CreateMetadata(MetadataDto metadata)
+        {
+            dbContext.Metadata.Add(new MetadataModel()
+            {
+                ID = metadata.Id,
+                FullPath = metadata.FullPath,
+                Contributor = metadata.Contributor,
+                Coverage = metadata.Coverage,
+                Creator = metadata.Creator,
+                Date = metadata.Date,
+                Description = metadata.Description,
+                Format = metadata.Format,
+                Identifier = metadata.Identifier,
+                Language = metadata.Language,
+                Publisher = metadata.Publisher,
+                Relation = metadata.Relation,
+                Rights = metadata.Rights,
+                Source = metadata.Source,
+                Subject = metadata.Subject,
+                Title = metadata.Title,
+                Type = metadata.Type,
+            });
+            try
+            {
+                dbContext.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+            return true;
+        }
+
+        public bool UpdateMetadata(MetadataDto dto)
+        {
+            var metadata = GetMetadata(dto);
+            if(metadata != null)
+            {
+                metadata.FullPath = dto.FullPath;
+                metadata.Contributor = dto.Contributor;
+                metadata.Coverage = dto.Coverage;
+                metadata.Creator = dto.Creator;
+                metadata.Date = dto.Date;
+                metadata.Description = dto.Description;
+                metadata.Format = dto.Format;
+                metadata.Identifier = dto.Identifier;
+                metadata.Language = dto.Language;
+                metadata.Publisher = dto.Publisher;
+                metadata.Relation = dto.Relation;
+                metadata.Rights = dto.Rights;
+                metadata.Source = dto.Source;
+                metadata.Subject = dto.Subject;
+                metadata.Title = dto.Title;
+                metadata.Type = dto.Type;
+
+                try
+                {
+                    dbContext.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                }
+                return true;
+            }
+
+            return false;
+        }
+
+        public MetadataDto ConvertMetadataToDto(MetadataModel model)
+        {
+            return new MetadataDto()
+            {
+                Id = model.ID,
+                FullPath = model.FullPath,
+                Contributor = model.Contributor,
+                Coverage = model.Coverage,
+                Creator = model.Creator,
+                Date = model.Date,
+                Description = model.Description,
+                Format = model.Format,
+                Identifier = model.Identifier,
+                Language = model.Language,
+                Publisher = model.Publisher,
+                Relation = model.Relation,
+                Rights = model.Rights,
+                Source = model.Source,
+                Subject = model.Subject,
+                Title = model.Title,
+                Type = model.Type,
+            };
+        }
+
+        public MetadataModel GetMetadata(string fullPath)
+        {
+            return dbContext.Metadata.Where(data => data.FullPath == fullPath).FirstOrDefault();
+        }
+
+
+        public MetadataModel GetMetadata(MetadataDto metadata)
+        {
+            return dbContext.Metadata.Where(data => data.FullPath == metadata.FullPath).FirstOrDefault();
+        }
+
+        public bool MetadataExists(string fullpath)
+        {
+            if (fullpath == null)
+            {
+                return false;
+            }
+            return dbContext.Metadata.Select(m => m.FullPath == fullpath).FirstOrDefault();
+        }
+
+
+        public void CreateOrUpdate(MetadataDto metadata)
+        {
+            if (MetadataExists(metadata.FullPath))
+            {
+                UpdateMetadata(metadata);
+            }
+            else
+            {
+                CreateMetadata(metadata);
+            }
+
+        }
+
+        #endregion
+
+        #region Access
+
+        public void CreateOrUpdate(AccessDto access)
+        {
+            if(AccessExists(access.FileFullPath, access.UserId))
+            {
+                UpdateAccess(access);
+            }
+            else
+            {
+                CreateAccess(access);
+            }
+        }
+
+        public bool AccessExists(string fullpath, string userId)
+        {
+            if (fullpath == null || userId == null)
+            {
+                return false;
+            }
+            return dbContext.Access.Select(m => m.FileFullPath == fullpath && m.UserId == userId).FirstOrDefault();
+        }
+
+        public bool CreateAccess(AccessDto access)
+        {
+            dbContext.Access.Add(new AccessModel()
+            {
+                Id = dbContext.Access.Count() + 1,
+                UserId = access.UserId,
+                FileFullPath = access.FileFullPath,
+                Access = access.Access,
+            });
+            try
+            {
+                dbContext.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+            return true;
+        }
+
+        public bool UpdateAccess(AccessDto access)
+        {
+            var accessModel = GetAccess(access);
+            if (accessModel != null)
+            {
+                accessModel.FileFullPath = access.FileFullPath;
+                accessModel.UserId = access.UserId;
+                accessModel.Access = access.Access;
+
+                try
+                {
+                    dbContext.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                }
+                return true;
+            }
+
+            return false;
+        }
+
+        public AccessModel GetAccess(string fullPath, string userId)
+        {
+            return dbContext.Access.Where(data => data.FileFullPath == fullPath && data.UserId == userId).FirstOrDefault();
+        }
+
+
+        public AccessModel GetAccess(AccessDto metadata)
+        {
+            return dbContext.Access.Where(data => data.FileFullPath == metadata.FileFullPath).FirstOrDefault();
+        }
+
+
+        #endregion
 
         public void Dispose()
         {

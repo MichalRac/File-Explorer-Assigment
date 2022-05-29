@@ -5,12 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FileExplorerDatabase_MichalRac.EntityFramework
+namespace FileExplorerBusinessLogic_MichalRac
 {
-    public class MetadataModel
+    public class MetadataDto
     {
         [Key]
-        public int ID { get; set; }
+        public int Id { get; set; } 
+
         public string FullPath { get; set; }
 
         public string Contributor { get; set; }

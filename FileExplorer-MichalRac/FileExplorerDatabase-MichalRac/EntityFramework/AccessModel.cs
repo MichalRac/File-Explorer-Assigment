@@ -7,11 +7,13 @@ using System.Threading.Tasks;
 
 namespace FileExplorerDatabase_MichalRac.EntityFramework
 {
-    public class PermissionsModel
+    public class AccessModel
     {
         [Key]
-        public string Id { get; set; }
+        public int Id { get; set; }
+
         public string UserId { get; set; }
-        public string Access { get; set; }
+        public string FileFullPath { get; set; }
+        public bool Access { get; set; }
     }
 }

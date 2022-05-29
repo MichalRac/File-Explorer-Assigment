@@ -11,9 +11,9 @@ namespace FileExplorerDatabase_MichalRac
         public static readonly string Path = System.IO.Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), DBName, DBName + DB_EXTENSION);
 
         public DbSet<UserModel> Users { get; set; }
-        public DbSet<NotificationsModel> Notifications { get; set; }
-        public DbSet<PermissionsModel> Permissions { get; set; }
         public DbSet<MetadataModel> Metadata { get; set; }
+        public DbSet<NotificationsModel> Notifications { get; set; }
+        public DbSet<AccessModel> Access { get; set; }
 
         public FileExplorerDBContext() : base()
         {
