@@ -70,7 +70,8 @@
                         <MenuItem Header="{Binding Source={StaticResource Strings}, Path=Exit}" Click="MenuItem_Exit_Click"/>
                     </MenuItem>
                     <MenuItem Header="DBStuff">
-                        <MenuItem Header="Run" Command="{Binding DBStuffCommand}"/>
+                        <MenuItem Header="ShowUsers" Command="{Binding ShowUsersCommand}"/>
+                        <MenuItem Header="RegisterUser" Command="{Binding RegisterUserCommand}"/>
                     </MenuItem>
                 </Menu>
             </WrapPanel>

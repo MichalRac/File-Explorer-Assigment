@@ -1,0 +1,20 @@
+﻿<Window x:Class="FileExplorer_MichalRac.UserMangementWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:FileExplorer_MichalRac"
+        mc:Ignorable="d"
+        Title="UserMangementWindow" Height="450" Width="800">
+    <Grid>
+        <DataGrid Name="DataGrid" ItemsSource="{Binding Users}" AddingNewItem="DG1_AddingNewItem" CanUserAddRows="True" AutoGenerateColumns="False" >
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Id}" Header="Id" Width="1*" />
+                <DataGridTextColumn Binding="{Binding Login}" Header="Login" Width="3*"  />
+                <DataGridTextColumn Binding="{Binding Password}" Header="Password"  Width="3*" ></DataGridTextColumn>
+                <DataGridTextColumn Binding="{Binding Ip}" Header="Ip"  Width="3*" ></DataGridTextColumn>
+                <DataGridTextColumn Binding="{Binding IsHost}" Header="Host"  Width="1*" ></DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Window>

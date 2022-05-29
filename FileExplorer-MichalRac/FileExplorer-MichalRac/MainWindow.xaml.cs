@@ -10,6 +10,8 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using FileExplorer_MichalRac.MVVM;
 using System.Globalization;
+using FileExplorerBusinessLogic_MichalRac;
+using System.DirectoryServices.AccountManagement;
 
 namespace FileExplorer_MichalRac
 {
@@ -20,6 +22,9 @@ namespace FileExplorer_MichalRac
     {
         private LoadedTextFile loadedTextFile = new LoadedTextFile();
         public FileExplorer FileExplorer { get; private set; }
+
+        public static UserDto loggedUser { get; set; }
+        public static FileManager FileManager { get; set; }
 
         public MainWindow()
         {
@@ -32,6 +37,62 @@ namespace FileExplorer_MichalRac
             dirView.SelectedItemChanged += DirView_SelectedItemChanged;
             FileExplorer.PropertyChanged += FileExplorer_PropertyChanged;
             FileExplorer.OnOpenFileRequest += FileExplorer_OnOpenFileRequest;
+
+            FileManager = new FileManager();
+
+            bool validated = false;
+
+            if(!FileManager.CheckInitUser())
+            {
+                const string testPass = "student";
+                var newUser = new UserDto() { Login = FileManager.HostUserName, Password = testPass, Ip = "<random ip>" };
+                new RequestPasswordWindow(pass =>
+                {
+                    if(pass == testPass)
+                    {
+                        var newUser = new UserDto() { Login = FileManager.HostUserName, Password = pass, Ip = "<random ip>", IsHost = true }; ;
+                        FileManager.CreateUser(newUser);
+                        loggedUser = newUser;
+                    }
+                    else
+                    {
+                        System.Windows.MessageBox.Show("Cannot create host account");
+                        this.Close();
+                        return;
+                    }
+                }).Show();
+            }
+            else
+            {
+                if (!FileManager.IsUserLogedInAsAdministratorInWindows())
+                {
+                    System.Windows.MessageBox.Show("login as admin");
+                    this.Close();
+                    return;
+                }
+
+                new LoginWindow((login, pass) =>
+                {
+                    if (FileManager.AttemptLogin(login, pass))
+                    {
+                        var user = FileManager.GetUser(login);
+                        loggedUser = new UserDto() { Id = user.Id, Login = user.Login, Password = user.Password, Ip = user.IP }; ;
+                    }
+                    else
+                    {
+                        System.Windows.MessageBox.Show("wrong password, create a new one");
+
+                        var user = FileManager.GetUser(login);
+                        new RequestPasswordWindow(newPass => 
+                        {
+                            user.Password = newPass;
+                            var userDto = new UserDto() { Id = user.Id, Login = user.Login, Password = user.Password, Ip = user.IP };
+                            FileManager.UpdateUser(userDto);
+                            loggedUser = userDto;
+                        }).Show();
+                    }
+                }).Show();
+            }
         }
 
         private void FileExplorer_OnOpenFileRequest(object? sender, FileInfoViewModel viewModel)

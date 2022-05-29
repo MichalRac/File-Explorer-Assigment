@@ -10,12 +10,9 @@ namespace FileExplorerBusinessLogic_MichalRac
     {
         public int Id { get; set; }
         public string Login { get; set; }
-        public string Ip { get; set; }
         public string Password { get; set; }
-        public bool IsLogged { get; set; }
-        public DateTime CreatedTime { get; set; }
-        public DateTime UpdatedTime { get; set; }
-        public bool IsActive { get; set; }
+        public string Ip { get; set; }
+        public bool IsHost { get; set; }
 
     }
 }

@@ -21,6 +21,10 @@
     <None Remove="Assets\uk_flag.png" />
     <None Remove="Assets\unknown-file.png" />
   </ItemGroup>
+	
+  <ItemGroup>
+    <PackageReference Include="System.DirectoryServices.AccountManagement" Version="6.0.0" />
+  </ItemGroup>
 
   <ItemGroup>
     <Resource Include="Assets\folder_closed.png" />

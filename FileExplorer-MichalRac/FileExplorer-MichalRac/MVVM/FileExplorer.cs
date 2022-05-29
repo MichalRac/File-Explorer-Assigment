@@ -51,8 +51,9 @@
         public RelayCommand OpenRootFolderCommand { get; private set; }
         public RelayCommand SortRootFolderCommand { get; private set; }
         public RelayCommand OpenFileCommand { get; private set; }
-        public RelayCommand DBStuffCommand { get; private set; }
+        public RelayCommand ShowUsersCommand { get; private set; }
         public RelayCommand CancelSortingCommand { get; private set; }
+        public RelayCommand RegisterUserCommand { get; private set; }
         private CancellationTokenSource sortingCancellationTokenSource;
         private bool isSorting = false;
 
@@ -97,18 +98,32 @@
             SortRootFolderCommand = new RelayCommand(SortRootFolderExecute, SortRootFolderCanExecute);
             OpenFileCommand = new RelayCommand(OpenFileExecute, OpenFileCanExecute);
             CancelSortingCommand = new RelayCommand(CancelSortingExecute, CancelSortingCanExecute);
-            DBStuffCommand = new RelayCommand(DBStuffExecute, DbStuffCanExecute);
+            ShowUsersCommand = new RelayCommand(ShowUsersExecute, ShowUsersCanExecute);
+            RegisterUserCommand = new RelayCommand(RegisterUserExecute, RegisterUserCanExcecute);
         }
 
-        private void DBStuffExecute(object obj)
+        private bool RegisterUserCanExcecute(object obj)
         {
-            var fileManager = new FileExplorerBusinessLogic_MichalRac.FileManager();
-            var users = fileManager.GetUsers();
-            fileManager.CreateUser(new FileExplorerBusinessLogic_MichalRac.UserDto() { Id = 0, Login = "admin", Password = "admin", Ip = "255.255.255.255" });
-            users = fileManager.GetUsers();
+            return MainWindow.loggedUser != null && MainWindow.FileManager != null && MainWindow.FileManager.IsHost(MainWindow.loggedUser);
         }
 
-        private bool DbStuffCanExecute(object obj) => true;
+        private void RegisterUserExecute(object obj)
+        {
+            new RegisterUserWindow((login, pass, ip) =>
+            {
+                MainWindow.FileManager.CreateUser(new FileExplorerBusinessLogic_MichalRac.UserDto() { Login = login, Password = pass, Ip = ip });
+            }).Show();
+        }
+
+        private void ShowUsersExecute(object obj)
+        {
+            new UserMangementWindow().Show();
+        }
+
+        private bool ShowUsersCanExecute(object obj) 
+        {
+            return MainWindow.loggedUser != null && MainWindow.FileManager != null && MainWindow.FileManager.IsHost(MainWindow.loggedUser);
+        }
 
         public void OpenRoot(string path)
         {

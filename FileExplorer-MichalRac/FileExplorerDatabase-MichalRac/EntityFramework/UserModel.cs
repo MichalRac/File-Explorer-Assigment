@@ -21,5 +21,6 @@ namespace FileExplorerDatabase_MichalRac.EntityFramework
         [Required]
         public string IP { get; set; }
 
+        public bool IsHost { get; set; }
     }
 }
