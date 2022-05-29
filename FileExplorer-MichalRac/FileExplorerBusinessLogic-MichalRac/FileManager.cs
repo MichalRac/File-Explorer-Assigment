@@ -163,7 +163,7 @@ namespace FileExplorerBusinessLogic_MichalRac
         {
             dbContext.Metadata.Add(new MetadataModel()
             {
-                ID = metadata.Id,
+                Id = metadata.Id,
                 FullPath = metadata.FullPath,
                 Contributor = metadata.Contributor,
                 Coverage = metadata.Coverage,
@@ -232,7 +232,7 @@ namespace FileExplorerBusinessLogic_MichalRac
         {
             return new MetadataDto()
             {
-                Id = model.ID,
+                Id = model.Id,
                 FullPath = model.FullPath,
                 Contributor = model.Contributor,
                 Coverage = model.Coverage,
@@ -363,6 +363,79 @@ namespace FileExplorerBusinessLogic_MichalRac
         public AccessModel GetAccess(AccessDto metadata)
         {
             return dbContext.Access.Where(data => data.FileFullPath == metadata.FileFullPath).FirstOrDefault();
+        }
+
+
+        #endregion
+
+        #region Notifications
+
+        public void CreateOrUpdate(NotificationDto notification)
+        {
+            if (NotificationExists(notification.FullPath))
+            {
+                UpdateNotification(notification);
+            }
+            else
+            {
+                CreateNotification(notification);
+            }
+        }
+
+        private bool CreateNotification(NotificationDto notification)
+        {
+            dbContext.Notifications.Add(new NotificationsModel()
+            {
+                Id = dbContext.Notifications.Count() + 1,
+                CreationTime = notification.CreationTime,
+                LastModified = notification.LastModified,
+            });
+            try
+            {
+                dbContext.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+            return true;
+        }
+
+        private bool UpdateNotification(NotificationDto notification)
+        {
+            var notificationModel = GetNotification(notification);
+            if (notificationModel != null)
+            {
+                notificationModel.FullPath = notification.FullPath;
+                notificationModel.LastModified = notification.LastModified;
+                notificationModel.CreationTime = notification.CreationTime;
+
+                try
+                {
+                    dbContext.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                }
+                return true;
+            }
+
+            return false;
+        }
+
+        private NotificationsModel GetNotification(NotificationDto notification)
+        {
+            throw new NotImplementedException();
+        }
+
+        private bool NotificationExists(string fullPath)
+        {
+            if (fullPath == null)
+            {
+                return false;
+            }
+            return dbContext.Notifications.Select(m => m.FullPath == fullPath).FirstOrDefault();
         }
 
 

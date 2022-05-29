@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Windows.Forms;
 using System.Collections.ObjectModel;
 using System.Windows.Forms;
 using System.Windows.Input;
@@ -33,6 +34,8 @@ namespace FileExplorer_MichalRac
             InitializeComponent();
             FileExplorer = new FileExplorer();
             DataContext = FileExplorer;
+
+            //FileExplorer.onStatusUpdate += (newStatus) => statusUpdate.Text = newStatus;
 
             dirView.SelectedItemChanged += DirView_SelectedItemChanged;
             FileExplorer.PropertyChanged += FileExplorer_PropertyChanged;
@@ -147,7 +150,6 @@ namespace FileExplorer_MichalRac
 
 
 
-
             /*            var textBlock = ((FrameworkElement)sender);
                         var path = textBlock.Tag.ToString();
                         var contextMenu = new ContextMenu();
@@ -210,7 +212,7 @@ namespace FileExplorer_MichalRac
             {
                 fileManager.CreateOrUpdate(new MetadataDto()
                 {
-                    Id = metadata.ID,
+                    Id = metadata.Id,
                     FullPath = metadata.FullPath,
                     Contributor = metadata.Contributor,
                     Coverage = metadata.Coverage,

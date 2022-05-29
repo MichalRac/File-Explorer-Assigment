@@ -9,7 +9,6 @@ namespace FileExplorerBusinessLogic_MichalRac
 {
     public class MetadataDto
     {
-        [Key]
         public int Id { get; set; } 
 
         public string FullPath { get; set; }

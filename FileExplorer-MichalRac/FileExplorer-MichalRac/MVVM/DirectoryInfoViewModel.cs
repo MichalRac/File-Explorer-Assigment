@@ -2,6 +2,7 @@
 {
     using FileExplorer_MichalRac.Asyncs;
     using FileExplorer_MichalRac.Commands;
+    using FileExplorerBusinessLogic_MichalRac;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -224,7 +225,19 @@
 
         private void OnFileSystemChanged(object sender, FileSystemEventArgs e)
         {
-            Application.Current.Dispatcher.Invoke(() => OnFileSystemChanged(e));
+            Application.Current.Dispatcher.Invoke(() => 
+            {
+                OnFileSystemChanged(e);
+
+                using (FileManager fm = new FileManager())
+                {
+                    fm.CreateOrUpdate(new NotificationDto() { FullPath = e.FullPath, LastModified = LastWriteTime, CreationTime = CreationTime });
+
+                    FileExplorer.onStatusUpdate?.Invoke($"Change of type {e.ChangeType}");
+                }
+
+            });
+
         }
 
         private void OnFileSystemChanged(FileSystemEventArgs e)

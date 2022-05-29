@@ -88,6 +88,21 @@
                 NotifyPropertyChanged();
             }
         }
+        private string statusUpdate;
+        public string StatusUpdate
+        {
+            get
+            {
+                return statusUpdate;
+            }
+            protected set
+            {
+                statusUpdate = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        public static Action<string> onStatusUpdate;
 
         public FileExplorer()
         {
@@ -100,6 +115,8 @@
             CancelSortingCommand = new RelayCommand(CancelSortingExecute, CancelSortingCanExecute);
             ShowUsersCommand = new RelayCommand(ShowUsersExecute, ShowUsersCanExecute);
             RegisterUserCommand = new RelayCommand(RegisterUserExecute, RegisterUserCanExcecute);
+
+            onStatusUpdate += (newStatus) => { StatusUpdate = newStatus; };
         }
 
         private bool RegisterUserCanExcecute(object obj)

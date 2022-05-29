@@ -10,7 +10,7 @@ namespace FileExplorerDatabase_MichalRac.EntityFramework
     public class MetadataModel
     {
         [Key]
-        public int ID { get; set; }
+        public int Id { get; set; }
         public string FullPath { get; set; }
 
         public string Contributor { get; set; }

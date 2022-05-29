@@ -88,7 +88,7 @@
 
         <TreeView Grid.Row="1" Name="dirView" ItemsSource="{Binding Root.Items}"/>
 
-        <StatusBar Grid.Row="2">
+        <StatusBar Grid.Row="2" Grid.ColumnSpan="2">
             <WrapPanel>
                 <TextBlock Margin="0,0,5,0">rash: </TextBlock>
                 <TextBlock Name="rashText"/>
@@ -96,6 +96,10 @@
                 <TextBlock Text="{Binding StatusMessage}"/>
             </WrapPanel>
             <Button Height="14" Width="40" Margin="25,0,5,0" Command="{Binding CancelSortingCommand}" Content="{Binding Source={StaticResource Strings}, Path=Generic_Cancel}" FontSize="8"/>
+            <WrapPanel>
+                <TextBlock Margin="0,0,5,0">statusUpdate:</TextBlock>
+                <TextBlock Text="{Binding StatusUpdate}"/>
+            </WrapPanel>
         </StatusBar>
 
         <ScrollViewer Grid.Row="1" Grid.Column="1">
