@@ -36,7 +36,10 @@ namespace FileExplorer_MichalRac
                     var checkbox = new CheckBox();
                     checkbox.Content = user.Login;
                     content.Children.Add(checkbox);
-                    checkbox.IsChecked = fm.GetAccess(fullPath, user.Login).Access;
+                    if(fm.AccessExists(fullpath, user.Login))
+                    {
+                        checkbox.IsChecked = fm.GetAccess(fullPath, user.Login).Access;
+                    }
 
                     checkboxes.Add(checkbox);
                 }
